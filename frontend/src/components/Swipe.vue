@@ -20,7 +20,7 @@
     <img src="../assets/images/no.png" class="reject">
     <img src="../assets/images/movie.jpg" class="main-img">
     <div class="movie-box">
-        <h1 id="title">Title</h1>
+        <h1>Title: {{title}}</h1>
     </div>
     <img src="../assets/images/maybe.png" class="save">
   </div>
@@ -33,16 +33,24 @@ export default {
     name: 'Swipe',
     data(){
         return{
-            titles: null,
-            title: "testingtitle",
-            cast: null,
-            rating:null,
-            desc: null,
-            image:null,
+            title: 'test title',
+            cast: '',
+            rating: '',
+            desc: '',
+            image: '',
         }
     },
     created(){
-        const options = {
+        this.getMovies();
+    },
+    methods :{
+        getMovies(){
+            let tempTitle = '';
+            let tempCast = '';
+            let tempRating = '';
+            let tempDesc = '';
+            let tempImage = '';
+            const options = {
             method: 'GET',
             url: 'https://unogs-unogs-v1.p.rapidapi.com/api.cgi',
             params:{t:'loadvideo', q:'60029591'},
@@ -50,23 +58,26 @@ export default {
                 'x-rapidapi-key': '6f81e272b7mshb1b9a24a32c2189p19fd2ajsn8314bbf4903c',
                 'x-rapidapi-host': 'unogs-unogs-v1.p.rapidapi.com'
             }
-        };
-
-        axios.request(options).then(function (response) {
-            console.log(response.data);
-            console.log(response.data.RESULT.nfinfo[1]);
-            console.log("testing this title:  " +this.title);
-            this.title=response.data.RESULT.nfinfo[1];
-            this.cast=response.data.RESULT.people.slice(0,3);
-            this.rating=response.data.RESULT.nfinfo[5];
-            this.desc=response.data.RESULT.nfinfo[2];
-            this.inage=response.data.RESULT.nfinfo[0];
-        }).catch(function (error) {
-            console.error(error);
-        });
+            };
             
-    },
-    methods :{
+            axios.request(options).then(function (response) {
+                console.log(response.data);
+                console.log(response.data.RESULT.nfinfo[1]);
+                tempTitle=response.data.RESULT.nfinfo[1];
+                tempCast=response.data.RESULT.people.slice(0,3);
+                tempRating=response.data.RESULT.nfinfo[5];
+                tempDesc=response.data.RESULT.nfinfo[2];
+                tempImage=response.data.RESULT.nfinfo[0];
+
+            }).catch(function (error) {
+                console.error(error);
+            });
+            this.title = tempTitle;
+            this.cast = tempCast;
+            this.rating = tempRating;
+            this.desc = tempDesc;
+            this.image = tempImage;
+        }
     }
 }
 
