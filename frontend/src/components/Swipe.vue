@@ -20,16 +20,58 @@
     <img src="../assets/images/no.png" class="reject">
     <img src="../assets/images/movie.jpg" class="main-img">
     <div class="movie-box">
-        <h1>The Great Gatsby</h1>
+        <h1 id="title">Title</h1>
     </div>
     <img src="../assets/images/maybe.png" class="save">
   </div>
 </template>
+
 <script>
+import axios from 'axios';
+
 export default {
-    
+    name: 'Swipe',
+    data(){
+        return{
+            titles: null,
+            title: "testingtitle",
+            cast: null,
+            rating:null,
+            desc: null,
+            image:null,
+        }
+    },
+    created(){
+        const options = {
+            method: 'GET',
+            url: 'https://unogs-unogs-v1.p.rapidapi.com/api.cgi',
+            params:{t:'loadvideo', q:'60029591'},
+            headers: {
+                'x-rapidapi-key': '6f81e272b7mshb1b9a24a32c2189p19fd2ajsn8314bbf4903c',
+                'x-rapidapi-host': 'unogs-unogs-v1.p.rapidapi.com'
+            }
+        };
+
+        axios.request(options).then(function (response) {
+            console.log(response.data);
+            console.log(response.data.RESULT.nfinfo[1]);
+            console.log("testing this title:  " +this.title);
+            this.title=response.data.RESULT.nfinfo[1];
+            this.cast=response.data.RESULT.people.slice(0,3);
+            this.rating=response.data.RESULT.nfinfo[5];
+            this.desc=response.data.RESULT.nfinfo[2];
+            this.inage=response.data.RESULT.nfinfo[0];
+        }).catch(function (error) {
+            console.error(error);
+        });
+            
+    },
+    methods :{
+    }
 }
+
 </script>
+
 <style scoped>
 .main{
     width: 100%;
