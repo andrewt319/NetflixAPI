@@ -2,34 +2,88 @@
     <div class="main">
         <div class="left-col"><div class="content-box">
             <h3>Rating</h3>
+            <h4>{{movies[count].rating}} </h4>
             <img src="../assets/images/rating.png" class="rating">
             <h3>Description</h3>
-            <p>Midwest native Nick Carraway (Tobey Maguire) arrives in 1922 New York in search of the American dream. Nick, a would-be writer, moves in next-door to millionaire Jay Gatsby (Leonardo DiCaprio) and across the bay from his cousin Daisy (Carey Mulligan) and her philandering husband, Tom (Joel Edgerton). Thus, Nick becomes drawn into the captivating world of the wealthy and -- as he bears witness to their illusions and deceits -- pens a tale of impossible love, dreams, and tragedy.</p>
-            <button type="button">Preview clips from this film<img src="../assets/images/arrow.png"></button>
+            <p>{{movies[count].synopsis}}</p>
+            <button v-on:click="count += 1">Preview clips from this film<img src="../assets/images/arrow.png"></button>
         </div>  
     </div>
     <div class="right-col">
       <div class="cast">
             <h3>Cast</h3>
-            <img src="../assets/images/leo.jpg" class="cast-img">
-            <img src="../assets/images/tobey.jpg" class="cast-img">
-            <img src="../assets/images/carey.jpg" class="cast-img">
+            <ul>
+            <li>{{this.cast[0]}}</li>
+            <li>{{this.cast[1]}}</li>
+            <li>{{this.cast[2]}}</li>
+            </ul>
         </div>
     </div>
-    <img src="../assets/images/yes.png" class="accept">
-    <img src="../assets/images/no.png" class="reject">
-    <img src="../assets/images/movie.jpg" class="main-img">
+    <button v-on:click="count += 1"><img src="../assets/images/yes.png" class="accept"> </button>
+    <button v-on:click="count += 1"><img src="../assets/images/no.png" class="reject"> </button>
+    <img :src="movies[count].largeimage" class="main-img">
     <div class="movie-box">
-        <h1>The Great Gatsby</h1>
+        <h1>{{movies[count].title}}</h1>
     </div>
-    <img src="../assets/images/maybe.png" class="save">
+    <button v-on:click="count -= 1"><img src="../assets/images/maybe.png" class="save"> </button>
   </div>
 </template>
+
 <script>
+import axios from 'axios';
+
 export default {
-    
+    name: 'Swipe',
+    data(){
+        return{
+            movies:[],
+            count: 0,
+            title: '',
+            cast: '',
+            rating: '',
+            desc: '',
+            image: '',
+        }
+    },
+    created(){
+        this.getMovies();
+    },
+    methods :{
+        async getMovies(){
+            let tempMovies= [];
+            const options = {
+                method: 'GET',
+                url: 'https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi',
+                params: {
+                    q: 'get:new7-!1900,2018-!0,5-!0,10-!0-!Any-!Any-!Any-!gt100-!{downloadable}',
+                    t: 'ns',
+                    cl: 'all',
+                    st: 'adv',
+                    ob: 'Relevance',
+                    p: '1',
+                    sa: 'and'
+                },
+                headers: {
+                    'x-rapidapi-key': '6f81e272b7mshb1b9a24a32c2189p19fd2ajsn8314bbf4903c',
+                    'x-rapidapi-host': 'unogs-unogs-v1.p.rapidapi.com'
+                }
+            };
+            
+            await axios.request(options).then(function (response) {
+                console.log("start");
+                console.log(response.data);
+                tempMovies = response.data.ITEMS;
+            }).catch(function (error) {
+                console.error(error);
+            });
+            this.movies = tempMovies;
+
+        }
+    }
 }
+
 </script>
+
 <style scoped>
 .main{
     width: 100%;
